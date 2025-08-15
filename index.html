@@ -19,7 +19,7 @@
       }
       /* Custom styles for star rating */
       .star-rating .star {
-        color: #8f8d8a; /* gray-400 - Makes unselected stars a solid light gray */
+        color: #8e9299; /* gray-400 - Makes unselected stars a solid light gray */
         cursor: pointer;
         transition: color 0.2s;
       }
@@ -292,18 +292,18 @@
         const data = Object.fromEntries(formData.entries());
 
         try {
-          // Use fetch to post the data as a JSON string
+          // Use fetch to post the data. By removing the 'headers' object,
+          // the browser sends the data with a Content-Type of 'text/plain',
+          // which avoids the CORS preflight request that was causing the error.
           const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
             method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            headers: {
-              "Content-Type": "application/json",
-            },
             body: JSON.stringify(data),
           });
 
-          const result = await response.json();
+          // Since the script now handles the response, we can parse it as JSON.
+          // Note: Apps Script may wrap the response, so we need to handle that.
+          const resultText = await response.text();
+          const result = JSON.parse(resultText);
 
           if (result.result === "success") {
             // Show success message
