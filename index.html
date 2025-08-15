@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tennis Summer Camp Feedback</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Custom styles for star rating */
+      .star-rating .star {
+        color: #8f8d8a; /* gray-400 - Makes unselected stars a solid light gray */
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .star-rating .star:hover,
+      .star-rating .star.selected {
+        color: #f59e0b; /* amber-500 - Fills the star with amber on hover/select */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl">
+      <div
+        id="feedback-form-container"
+        class="bg-white rounded-2xl shadow-lg p-6 sm:p-8"
+      >
+        <div class="text-center mb-8">
+          <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">
+            Summer Camp Feedback
+          </h1>
+          <p class="text-gray-500 mt-2">
+            Help us improve our tennis camp experience!
+          </p>
+        </div>
+
+        <form id="feedbackForm">
+          <!-- Ratings Section -->
+          <div class="space-y-6 mb-6">
+            <!-- Coaching Rating -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >How would you rate the coaching?</label
+              >
+              <div
+                id="coachingRating"
+                class="star-rating flex items-center space-x-1 text-3xl"
+              >
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+              </div>
+              <input
+                type="hidden"
+                name="coachingRating"
+                id="coachingRatingValue"
+                required
+              />
+            </div>
+            <!-- Facilities Rating -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >How would you rate the facilities (courts, clubhouse,
+                etc.)?</label
+              >
+              <div
+                id="facilitiesRating"
+                class="star-rating flex items-center space-x-1 text-3xl"
+              >
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+              </div>
+              <input
+                type="hidden"
+                name="facilitiesRating"
+                id="facilitiesRatingValue"
+                required
+              />
+            </div>
+            <!-- Activities Rating -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >How would you rate the non-tennis activities?</label
+              >
+              <div
+                id="activitiesRating"
+                class="star-rating flex items-center space-x-1 text-3xl"
+              >
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+              </div>
+              <input
+                type="hidden"
+                name="activitiesRating"
+                id="activitiesRatingValue"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Open-ended Questions -->
+          <div class="space-y-6 mb-8">
+            <div>
+              <label
+                for="enjoyedMost"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >What did your child enjoy most about the camp?</label
+              >
+              <textarea
+                id="enjoyedMost"
+                name="enjoyedMost"
+                rows="4"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition"
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="suggestions"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Do you have any suggestions for improvement?</label
+              >
+              <textarea
+                id="suggestions"
+                name="suggestions"
+                rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <span id="button-text">Submit Feedback</span>
+              <span id="loading-spinner" class="hidden">
+                <svg
+                  class="animate-spin h-5 w-5 text-white mx-auto"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0-0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Message -->
+      <div
+        id="success-message"
+        class="hidden text-center bg-white rounded-2xl shadow-lg p-8"
+      >
+        <svg
+          class="mx-auto h-16 w-16 text-green-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">
+          Thank You!
+        </h2>
+        <p class="text-gray-600 mt-2">
+          Your feedback has been submitted successfully. We appreciate you
+          taking the time to help us improve.
+        </p>
+      </div>
+
+      <!-- Error Message -->
+      <div
+        id="error-message"
+        class="hidden text-center bg-white rounded-2xl shadow-lg p-8 mt-4"
+      >
+        <svg
+          class="mx-auto h-16 w-16 text-red-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">
+          Submission Failed
+        </h2>
+        <p class="text-gray-600 mt-2" id="error-text">
+          Something went wrong. Please try again later.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      /**
+       * Handles the star rating interaction.
+       * @param {string} ratingGroupId - The ID of the star rating container.
+       * @param {string} hiddenInputId - The ID of the hidden input to store the value.
+       */
+      function setupStarRating(ratingGroupId, hiddenInputId) {
+        const ratingGroup = document.getElementById(ratingGroupId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const stars = ratingGroup.querySelectorAll(".star");
+
+        stars.forEach((star) => {
+          star.addEventListener("click", () => {
+            const value = star.getAttribute("data-value");
+            hiddenInput.value = value;
+            // Update star visual state
+            stars.forEach((s) => {
+              s.classList.toggle(
+                "selected",
+                s.getAttribute("data-value") <= value
+              );
+            });
+          });
+        });
+      }
+
+      // Initialize all star ratings on the page
+      setupStarRating("coachingRating", "coachingRatingValue");
+      setupStarRating("facilitiesRating", "facilitiesRatingValue");
+      setupStarRating("activitiesRating", "activitiesRatingValue");
+
+      const feedbackForm = document.getElementById("feedbackForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const buttonText = document.getElementById("button-text");
+      const loadingSpinner = document.getElementById("loading-spinner");
+
+      /**
+       * Handles the form submission process.
+       * @param {Event} e - The form submission event.
+       */
+      feedbackForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Show loading state
+        submitBtn.disabled = true;
+        buttonText.classList.add("hidden");
+        loadingSpinner.classList.remove("hidden");
+
+        // STEP 5: Paste your Google Apps Script Web App URL here
+        const GOOGLE_SHEET_WEB_APP_URL =
+          "https://script.google.com/macros/s/AKfycbxC05LpDk51aQ1EHx7cXZ_CCHhtM25seVe6Yawmc4rh_Prd5cY1U3zyo8-o3vCxbwXk/exec";
+
+        const formData = new FormData(feedbackForm);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+          // Use fetch to post the data as a JSON string
+          const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (result.result === "success") {
+            // Show success message
+            document
+              .getElementById("feedback-form-container")
+              .classList.add("hidden");
+            document
+              .getElementById("success-message")
+              .classList.remove("hidden");
+          } else {
+            throw new Error(result.error || "Unknown error from script.");
+          }
+        } catch (error) {
+          console.error("Error submitting form: ", error);
+          displayError(
+            "There was an error submitting your feedback. Please try again."
+          );
+          resetButton();
+        }
+      });
+
+      /**
+       * Resets the submit button to its original state.
+       */
+      function resetButton() {
+        submitBtn.disabled = false;
+        buttonText.classList.remove("hidden");
+        loadingSpinner.classList.add("hidden");
+      }
+
+      /**
+       * Displays an error message to the user.
+       * @param {string} message - The error message to display.
+       */
+      function displayError(message) {
+        document.getElementById("error-text").textContent = message;
+        document.getElementById("error-message").classList.remove("hidden");
+        // Hide the error message after 5 seconds
+        setTimeout(() => {
+          document.getElementById("error-message").classList.add("hidden");
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
