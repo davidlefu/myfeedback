@@ -19,11 +19,13 @@
       }
       /* Custom styles for star rating */
       .star-rating .star {
-        color: #8e9299; /* gray-400 - Makes unselected stars a solid light gray */
+        color: #8e9196; /* gray-400 - Makes unselected stars a solid light gray */
         cursor: pointer;
         transition: color 0.2s;
       }
+      /* This class is for hovering, while .selected is for the actual clicked rating */
       .star-rating .star:hover,
+      .star-rating .star.hover,
       .star-rating .star.selected {
         color: #f59e0b; /* amber-500 - Fills the star with amber on hover/select */
       }
@@ -54,13 +56,17 @@
               >
               <div
                 id="coachingRating"
-                class="star-rating flex items-center space-x-1 text-3xl"
+                class="star-rating flex items-center space-x-2 text-3xl"
               >
-                <span class="star" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
+                <span class="text-lg text-gray-500 font-medium">1</span>
+                <div class="flex space-x-1">
+                  <span class="star" data-value="1">&#9733;</span>
+                  <span class="star" data-value="2">&#9733;</span>
+                  <span class="star" data-value="3">&#9733;</span>
+                  <span class="star" data-value="4">&#9733;</span>
+                  <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <span class="text-lg text-gray-500 font-medium">5</span>
               </div>
               <input
                 type="hidden"
@@ -77,13 +83,17 @@
               >
               <div
                 id="facilitiesRating"
-                class="star-rating flex items-center space-x-1 text-3xl"
+                class="star-rating flex items-center space-x-2 text-3xl"
               >
-                <span class="star" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
+                <span class="text-lg text-gray-500 font-medium">1</span>
+                <div class="flex space-x-1">
+                  <span class="star" data-value="1">&#9733;</span>
+                  <span class="star" data-value="2">&#9733;</span>
+                  <span class="star" data-value="3">&#9733;</span>
+                  <span class="star" data-value="4">&#9733;</span>
+                  <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <span class="text-lg text-gray-500 font-medium">5</span>
               </div>
               <input
                 type="hidden"
@@ -99,13 +109,17 @@
               >
               <div
                 id="activitiesRating"
-                class="star-rating flex items-center space-x-1 text-3xl"
+                class="star-rating flex items-center space-x-2 text-3xl"
               >
-                <span class="star" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
+                <span class="text-lg text-gray-500 font-medium">1</span>
+                <div class="flex space-x-1">
+                  <span class="star" data-value="1">&#9733;</span>
+                  <span class="star" data-value="2">&#9733;</span>
+                  <span class="star" data-value="3">&#9733;</span>
+                  <span class="star" data-value="4">&#9733;</span>
+                  <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <span class="text-lg text-gray-500 font-medium">5</span>
               </div>
               <input
                 type="hidden"
@@ -238,7 +252,7 @@
 
     <script>
       /**
-       * Handles the star rating interaction.
+       * Handles the star rating interaction, including hover and click events.
        * @param {string} ratingGroupId - The ID of the star rating container.
        * @param {string} hiddenInputId - The ID of the hidden input to store the value.
        */
@@ -247,11 +261,30 @@
         const hiddenInput = document.getElementById(hiddenInputId);
         const stars = ratingGroup.querySelectorAll(".star");
 
+        // Handle mouseover to light up stars
+        stars.forEach((star) => {
+          star.addEventListener("mouseover", () => {
+            const value = star.getAttribute("data-value");
+            stars.forEach((s) => {
+              s.classList.toggle(
+                "hover",
+                s.getAttribute("data-value") <= value
+              );
+            });
+          });
+        });
+
+        // Handle mouseout to reset the hover effect
+        ratingGroup.addEventListener("mouseout", () => {
+          stars.forEach((s) => s.classList.remove("hover"));
+        });
+
+        // Handle click to set the final rating
         stars.forEach((star) => {
           star.addEventListener("click", () => {
             const value = star.getAttribute("data-value");
             hiddenInput.value = value;
-            // Update star visual state
+            // Update the permanent 'selected' state
             stars.forEach((s) => {
               s.classList.toggle(
                 "selected",
@@ -292,16 +325,12 @@
         const data = Object.fromEntries(formData.entries());
 
         try {
-          // Use fetch to post the data. By removing the 'headers' object,
-          // the browser sends the data with a Content-Type of 'text/plain',
-          // which avoids the CORS preflight request that was causing the error.
+          // Use fetch to post the data.
           const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
             method: "POST",
             body: JSON.stringify(data),
           });
 
-          // Since the script now handles the response, we can parse it as JSON.
-          // Note: Apps Script may wrap the response, so we need to handle that.
           const resultText = await response.text();
           const result = JSON.parse(resultText);
 
